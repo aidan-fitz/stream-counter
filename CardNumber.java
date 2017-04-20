@@ -11,6 +11,21 @@ public class CardNumber {
         this.checkDigit = makeCheckDigit(concat(issuerID, accountID));
     }
 
+    public CardNumber(String digits) {
+        BigInteger number = new BigInteger(digits);
+        if (verifyCheckDigit(number)) {
+            // The first 6 digits are the issuer identification number (IIN)
+            this.issuerID = new BigInteger(digits.substring(0, 6));
+            // The subsequent digits except the last digit are the individual account identifier
+            this.accountID = new BigInteger(digits.substring(6, digits.length() - 1));
+            // The last digit is the check digit
+            this.checkDigit = Integer.parseInt(number.substring(digits.length() - 1));
+        }
+        else {
+            throw new NumberFormatException("Check digit doesn't check out: " + digits);
+        }
+    }
+
     /**
      * Concatenates two BigIntegers.
      */
@@ -61,6 +76,14 @@ public class CardNumber {
             digits = qr[0];
         }
         return sum % 10 == 0;
+    }
+
+    /**
+     * Verifies this card number. Should always return true, as {@link CardNumber(String)} would throw
+     * an exception if passed an invalid card number.
+     */
+    public boolean isValidCardNumber() {
+        return verifyCheckDigit(new BigInteger(this.toString()));
     }
 
     @Override
