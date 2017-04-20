@@ -1,5 +1,8 @@
 import java.math.BigInteger;
 
+/**
+ * Represents a payment card number (such as a credit or debit card number).
+ */
 public class CardNumber {
     public final BigInteger issuerID;
     public final BigInteger accountID;
